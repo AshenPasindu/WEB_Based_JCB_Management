@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JCB Hire - Payments & Receipts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Barlow', sans-serif; background-color: #f8fafc; font-size: 15px; }
+        .font-condensed { font-family: 'Barlow Condensed', sans-serif; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex">
+
+<!-- SIDEBAR -->
+<aside class="w-64 flex-col bg-[#F5C200] border-r border-black/10 flex shrink-0 justify-between">
+    <div>
+        <div class="p-5 border-b border-black/10 flex items-center gap-3">
+            <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center shrink-0 shadow-md">
+                <span class="font-black text-white text-2xl font-condensed">J</span>
+            </div>
+            <div>
+                <h1 class="font-black text-black text-lg tracking-widest leading-none font-condensed">JCB HIRE</h1>
+                <p class="text-[10px] text-black/70 font-bold uppercase tracking-widest mt-0.5">Admin Control Panel</p>
+            </div>
+        </div>
+        <nav class="p-3 space-y-1.5">
+            <a href="/admin.html" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10"><span>⊞</span><span class="font-condensed">DASHBOARD</span></a>
+            <a href="/machine.html" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10"><span>🚜</span><span class="font-condensed">MACHINE MANAGEMENT</span></a>
+            <a href="/operator.html" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10"><span>👷</span><span class="font-condensed">OPERATOR MANAGEMENT</span></a>
+            <a href="/inventory.html" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10"><span>📦</span><span class="font-condensed">INVENTORY & PARTS</span></a>
+            <a href="/maintenance.html" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10"><span>🔧</span><span class="font-condensed">MAINTENANCE</span></a>
+            <a href="/payment.html" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-base font-bold bg-black text-white shadow"><span>💳</span><span class="font-condensed">PAYMENTS & RECEIPTS</span></a>
+        </nav>
+    </div>
+    <div class="p-4 border-t border-black/10 bg-black/5 flex items-center justify-between"><span class="text-xs font-bold">Admin</span><a href="/login.html" class="text-xs font-bold text-red-700">Logout</a></div>
+</aside>
+
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <header class="h-14 bg-white border-b border-gray-200 px-6 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+            <a href="/machine.html" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200">🚜 Machine Management</a>
+            <a href="/operator.html" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200">👷 Operator Management</a>
+            <a href="/inventory.html" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200">📦 Inventory & Parts</a>
+            <a href="/maintenance.html" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200">🔧 Maintenance</a>
+            <a href="/payment.html" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-black bg-gray-100 text-black">💳 Payments</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span><span class="text-xs font-bold text-gray-600">LIVE</span></span>
+            <span class="text-xs font-semibold text-gray-500 border-l border-gray-200 pl-3">14 Sep 2026</span>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+        <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">PAYMENT & RECEIPT MANAGEMENT</h1>
+
+        <!-- STATS CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-black text-white p-5 rounded-xl shadow-sm">
+                <div class="text-3xl font-black font-condensed text-white" id="stat-total">LKR 0</div>
+                <div class="text-xs font-bold text-white/70 uppercase">Total Collected</div>
+            </div>
+            <div class="bg-[#F5C200] text-black p-5 rounded-xl shadow-sm">
+                <div class="text-3xl font-black font-condensed text-black" id="stat-completed">0</div>
+                <div class="text-xs font-bold text-black/70 uppercase">Completed Payments</div>
+            </div>
+            <div class="bg-white border border-gray-200 text-black p-5 rounded-xl shadow-sm">
+                <div class="text-3xl font-black font-condensed text-orange-600" id="stat-pending">0</div>
+                <div class="text-xs font-bold text-gray-500 uppercase">Pending Payments</div>
+            </div>
+        </div>
+
+        <!-- FORM CARD -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+            <h2 class="text-base font-bold text-black mb-4">💳 1. Create / Edit Physical Payment Record</h2>
+            <form onsubmit="event.preventDefault(); savePay();" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="hidden" id="pId">
+                <div><label class="text-[11px] font-bold text-gray-500 block mb-1">CUSTOMER EMAIL</label><input type="email" id="pEmail" placeholder="customer@example.com" class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none" required></div>
+                <div><label class="text-[11px] font-bold text-gray-500 block mb-1">AMOUNT (LKR)</label><input type="number" id="pAmount" placeholder="e.g. 45000" class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none" required></div>
+                <div><label class="text-[11px] font-bold text-gray-500 block mb-1">PAYMENT METHOD</label><select id="pMethod" class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white"><option value="CASH / PHYSICAL">CASH / PHYSICAL</option><option value="CARD">CARD</option><option value="BANK TRANSFER">BANK TRANSFER</option></select></div>
+                <div><label class="text-[11px] font-bold text-gray-500 block mb-1">PAYMENT STATUS</label><select id="pStatus" class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white"><option value="PENDING">PENDING</option><option value="COMPLETED">COMPLETED</option></select></div>
+                <div class="col-span-full"><button type="submit" class="bg-black text-white text-xs font-bold px-4 py-2.5 rounded hover:bg-gray-800">💾 Save Payment Record</button></div>
+            </form>
+        </div>
+
+        <!-- TRANSACTIONS TABLE -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+            <h2 class="text-base font-bold text-black mb-4">📊 2. All Payment Transactions</h2>
+            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <table class="w-full text-sm">
+                    <thead class="bg-[#1e293b] text-white text-xs font-bold uppercase">
+                    <tr>
+                        <th class="p-3 text-left">PAY ID</th>
+                        <th class="p-3 text-left">BOOKING REF</th>
+                        <th class="p-3 text-left">CUSTOMER EMAIL</th>
+                        <th class="p-3 text-left">AMOUNT (LKR)</th>
+                        <th class="p-3 text-left">METHOD</th>
+                        <th class="p-3 text-left">DATE</th>
+                        <th class="p-3 text-left">STATUS</th>
+                        <th class="p-3 text-left">ACTIONS & RECEIPT</th>
+                    </tr>
+                    </thead>
+                    <tbody id="payTable" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+            <button onclick="loadPay()" class="bg-[#2d3748] text-white text-xs font-bold px-3 py-1.5 rounded mt-3">🔄 Refresh List</button>
+        </div>
+    </main>
+</div>
+
+<script>
+    let allPayments = [];
+
+    function loadPay() {
+        fetch('/api/payments').then(r=>r.json()).then(data => {
+            allPayments = data || [];
+            let tbody = document.getElementById('payTable'); tbody.innerHTML = '';
+
+            let totalCollected = 0;
+            let completedCount = 0;
+            let pendingCount = 0;
+
+            allPayments.forEach(p => {
+                let bRef = p.booking ? `#${p.booking.id}` : '#--';
+                let amountVal = p.amount || 0;
+
+                if (p.status === 'COMPLETED') {
+                    totalCollected += amountVal;
+                    completedCount++;
+                } else {
+                    pendingCount++;
+                }
+
+                tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${p.id}</td>
+                            <td class="p-3 font-semibold text-gray-700">${bRef}</td>
+                            <td class="p-3 font-bold text-blue-600">${p.customerEmail || 'N/A'}</td>
+                            <td class="p-3 font-bold">LKR ${amountVal.toLocaleString()}</td>
+                            <td class="p-3 text-gray-600 uppercase">${p.paymentMethod || 'CASH'}</td>
+                            <td class="p-3 text-xs text-gray-500">${p.paymentDate || '2026-09-14'}</td>
+                            <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-bold ${p.status==='COMPLETED'?'bg-green-100 text-green-800':'bg-yellow-100 text-yellow-800'}">${p.status}</span></td>
+                            <td class="p-3 flex items-center gap-2">
+                                <button onclick="sendReceipt(${p.id}, '${p.customerEmail}')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1 rounded shadow-sm flex items-center gap-1">
+                                    📧 Send Receipt
+                                </button>
+                                <button onclick="editPay(${p.id})" class="bg-blue-50 border border-blue-200 text-blue-600 text-xs font-bold px-2.5 py-1 rounded hover:bg-blue-100">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>`;
+            });
+
+            document.getElementById('stat-total').innerText = 'LKR ' + totalCollected.toLocaleString();
+            document.getElementById('stat-completed').innerText = completedCount;
+            document.getElementById('stat-pending').innerText = pendingCount;
+        });
+    }
+
+    function sendReceipt(id, email) {
+        if (!email || email === 'N/A') {
+            alert("❌ Customer Email is missing for this record.");
+            return;
+        }
+        fetch(`/api/payments/${id}/send-receipt`, { method: 'POST' })
+            .then(res => {
+                if (res.ok) {
+                    alert(`📧 Receipt successfully generated & sent to: ${email}`);
+                    loadPay();
+                } else {
+                    alert("❌ Failed to send email receipt.");
+                }
+            })
+            .catch(() => alert("❌ Network error sending receipt."));
+    }
+
+    function editPay(id) {
+        let p = allPayments.find(x => x.id === id);
+        if (p) {
+            document.getElementById('pId').value = p.id;
+            document.getElementById('pEmail').value = p.customerEmail || '';
+            document.getElementById('pAmount').value = p.amount || 0;
+            document.getElementById('pMethod').value = p.paymentMethod || 'CASH / PHYSICAL';
+            document.getElementById('pStatus').value = p.status || 'PENDING';
+        }
+    }
+
+    function savePay() {
+        let id = document.getElementById('pId').value;
+        let payload = {
+            customerEmail: document.getElementById('pEmail').value,
+            amount: parseFloat(document.getElementById('pAmount').value),
+            paymentMethod: document.getElementById('pMethod').value,
+            status: document.getElementById('pStatus').value,
+            paymentDate: '2026-09-14'
+        };
+        fetch(id ? `/api/payments/${id}` : '/api/payments', {
+            method: id ? 'PUT' : 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(payload)
+        }).then(() => {
+            document.getElementById('pId').value = '';
+            document.getElementById('pEmail').value = '';
+            document.getElementById('pAmount').value = '';
+            loadPay();
+        });
+    }
+
+    window.onload = loadPay;
+</script>
+</body>
+</html>

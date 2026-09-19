@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JCB Hire - Admin Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Barlow', sans-serif; background-color: #f8fafc; font-size: 15px; }
+        .font-condensed { font-family: 'Barlow Condensed', sans-serif; }
+
+        .pulse-green {
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: pulse-green-anim 1.5s infinite;
+        }
+        @keyframes pulse-green-anim {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .pulse-red {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            animation: pulse-red-anim 1.5s infinite;
+        }
+        @keyframes pulse-red-anim {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .pulse-yellow {
+            box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7);
+            animation: pulse-yellow-anim 1.5s infinite;
+        }
+        @keyframes pulse-yellow-anim {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex">
+
+<!-- SIDEBAR -->
+<aside class="w-64 flex-col bg-[#F5C200] border-r border-black/10 flex shrink-0 justify-between">
+    <div>
+        <div class="p-5 border-b border-black/10 flex items-center gap-3">
+            <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center shrink-0 shadow-md">
+                <span class="font-black text-white text-2xl font-condensed">J</span>
+            </div>
+            <div>
+                <h1 class="font-black text-black text-lg tracking-widest leading-none font-condensed">JCB HIRE</h1>
+                <p class="text-[10px] text-black/70 font-bold uppercase tracking-widest mt-0.5">Admin Control Panel</p>
+            </div>
+        </div>
+        <nav class="p-3 space-y-1.5" id="sidebar-nav">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-bold bg-black text-white shadow nav-btn">
+                <span class="flex items-center gap-3"><span>⊞</span><span class="font-condensed">DASHBOARD</span></span>
+            </button>
+            <button onclick="switchTab('booking')" id="btn-booking" class="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10 nav-btn">
+                <span class="flex items-center gap-3"><span>📅</span><span class="font-condensed">BOOKING MANAGEMENT</span></span>
+            </button>
+            <button onclick="switchTab('machine')" id="btn-machine" class="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10 nav-btn">
+                <span class="flex items-center gap-3"><span>🚜</span><span class="font-condensed">MACHINE MANAGEMENT</span></span>
+            </button>
+            <button onclick="switchTab('operator')" id="btn-operator" class="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10 nav-btn">
+                <span class="flex items-center gap-3"><span>👷</span><span class="font-condensed">OPERATOR MANAGEMENT</span></span>
+                <span id="opReqBadge" class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden">0</span>
+            </button>
+            <button onclick="switchTab('inventory')" id="btn-inventory" class="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10 nav-btn">
+                <span class="flex items-center gap-3"><span>📦</span><span class="font-condensed">INVENTORY & PARTS</span></span>
+                <span id="partReqBadge" class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden">0</span>
+            </button>
+            <button onclick="switchTab('maintenance')" id="btn-maintenance" class="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10 nav-btn">
+                <span class="flex items-center gap-3"><span>🔧</span><span class="font-condensed">MAINTENANCE</span></span>
+            </button>
+            <button onclick="switchTab('payment')" id="btn-payment" class="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10 nav-btn">
+                <span class="flex items-center gap-3"><span>💳</span><span class="font-condensed">PAYMENTS & RECEIPTS</span></span>
+            </button>
+        </nav>
+    </div>
+    <div class="p-4 border-t border-black/10 bg-black/5 flex items-center justify-between">
+        <div>
+            <div class="text-xs font-bold text-black">Admin</div>
+            <div class="text-[10px] text-black/60">Fleet Manager</div>
+        </div>
+        <a href="/login.html" class="text-xs font-bold text-red-700 hover:underline">Logout</a>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT AREA -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="h-14 bg-white border-b border-gray-200 px-6 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+            <button onclick="switchTab('booking')" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-1.5">📅 Bookings</button>
+            <button onclick="switchTab('machine')" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-1.5">🚜 Machine Management</button>
+            <button onclick="switchTab('operator')" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-1.5 relative">
+                👷 Operator Management
+                <span id="topOpReqBadge" class="w-2 h-2 bg-red-500 rounded-full animate-ping hidden"></span>
+            </button>
+            <button onclick="switchTab('inventory')" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-1.5 relative">
+                📦 Inventory & Parts
+                <span id="topPartReqBadge" class="w-2 h-2 bg-red-500 rounded-full animate-ping hidden"></span>
+            </button>
+            <button onclick="switchTab('maintenance')" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-1.5">🔧 Maintenance</button>
+            <button onclick="switchTab('payment')" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-1.5">💳 Payments</button>
+        </div>
+        <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 border border-green-200">
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 pulse-green"></span>
+                    <span class="text-xs font-bold text-green-700 uppercase tracking-wider">LIVE FLEET</span>
+                </span>
+            <span class="text-xs font-semibold text-gray-500 border-l border-gray-200 pl-3">19 Sep 2026</span>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+        <!-- 1. DASHBOARD SECTION -->
+        <section id="sec-dashboard" class="tab-sec space-y-6">
+            <div>
+                <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">DASHBOARD OVERVIEW</h1>
+                <p class="text-xs text-gray-500 font-semibold">JCB Hire — Live Machinery & Revenue Metrics</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div onclick="switchTab('machine')" class="bg-black text-white p-5 rounded-xl shadow-sm cursor-pointer hover:scale-[1.01] transition-transform">
+                    <div class="text-3xl font-black font-condensed text-white" id="d-machines">0</div>
+                    <div class="text-xs font-bold text-white/70 uppercase">Total Machines</div>
+                    <div class="text-[10px] text-green-400 mt-1 flex items-center gap-1 font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 pulse-green"></span>
+                        <span id="d-machines-avail">0 Available</span>
+                    </div>
+                </div>
+                <div onclick="switchTab('operator')" class="bg-[#F5C200] text-black p-5 rounded-xl shadow-sm cursor-pointer hover:scale-[1.01] transition-transform">
+                    <div class="text-3xl font-black font-condensed text-black" id="d-operators">0</div>
+                    <div class="text-xs font-bold text-black/70 uppercase">Total Operators</div>
+                    <div class="text-[10px] text-black/60 mt-1 font-semibold">Active Fleet Crew</div>
+                </div>
+
+                <!-- INVENTORY CARD WITH PENDING REQUESTS AND LOW STOCK WARNING -->
+                <div onclick="switchTab('inventory')" class="bg-black text-white p-5 rounded-xl shadow-sm cursor-pointer hover:scale-[1.01] transition-transform">
+                    <div class="text-3xl font-black font-condensed text-white" id="d-inventory">0</div>
+                    <div class="text-xs font-bold text-white/70 uppercase">Inventory Stock</div>
+                    <div class="mt-1 space-y-0.5">
+                        <div class="text-[10px] text-amber-400 font-semibold" id="d-part-reqs">0 Pending Requests</div>
+                        <div class="text-[10px] text-red-400 font-bold hidden flex items-center gap-1" id="d-low-stock">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 pulse-red"></span>
+                            <span id="d-low-stock-text">0 Low Stock Items (<5)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="switchTab('payment')" class="bg-[#F5C200] text-black p-5 rounded-xl shadow-sm cursor-pointer hover:scale-[1.01] transition-transform">
+                    <div class="text-3xl font-black font-condensed text-black" id="d-revenue">LKR 0</div>
+                    <div class="text-xs font-bold text-black/70 uppercase">Total Revenue</div>
+                    <div class="text-[10px] text-black/60 mt-1 font-semibold" id="d-pending-rev">0 pending payments</div>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-lg font-bold font-condensed uppercase text-black mb-4 flex items-center gap-2">
+                    <span>🚜</span> Live Fleet Status Overview
+                </h2>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-sm">
+                        <thead class="bg-[#1e293b] text-white text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-3 text-left">MACHINE ID</th>
+                            <th class="p-3 text-left">MACHINE NAME</th>
+                            <th class="p-3 text-left">LIVE STATUS</th>
+                            <th class="p-3 text-left">PRICE/HR (LKR)</th>
+                        </tr>
+                        </thead>
+                        <tbody id="d-fleetTable" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. BOOKING MANAGEMENT SECTION -->
+        <section id="sec-booking" class="tab-sec hidden space-y-6">
+            <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">BOOKING MANAGEMENT</h1>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📅 Add / Edit Customer Booking</h2>
+                <form onsubmit="event.preventDefault(); saveBooking();" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input type="hidden" id="bkId">
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">CUSTOMER NAME</label>
+                        <input type="text" id="bkName" placeholder="e.g. Kasun Kalhara" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">CUSTOMER EMAIL</label>
+                        <input type="email" id="bkEmail" placeholder="customer@example.com" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">PHONE NUMBER</label>
+                        <input type="text" id="bkPhone" placeholder="0771234567" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">SELECT MACHINE</label>
+                        <select id="bkMachineId" class="w-full border rounded px-3 py-2 text-sm bg-white" required>
+                            <option value="">Select Machine...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">TOTAL COST / PRICE (LKR)</label>
+                        <input type="number" id="bkCost" placeholder="45000" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">START DATE</label>
+                        <input type="date" id="bkStartDate" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">END DATE</label>
+                        <input type="date" id="bkEndDate" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">BOOKING STATUS</label>
+                        <select id="bkStatus" class="w-full border rounded px-3 py-2 text-sm bg-white font-bold text-blue-700">
+                            <option value="PENDING">🟡 PENDING</option>
+                            <option value="CONFIRMED">🟢 CONFIRMED</option>
+                            <option value="CANCELLED">🔴 CANCELLED</option>
+                            <option value="COMPLETED">🔵 COMPLETED</option>
+                        </select>
+                    </div>
+                    <div class="col-span-full">
+                        <button type="submit" id="btnSaveBooking" class="bg-black text-white text-xs font-bold px-5 py-2.5 rounded hover:bg-gray-800">
+                            💾 Save Booking Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📊 All Customer Bookings</h2>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-sm border-collapse">
+                        <thead class="bg-[#1e293b] text-white text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-3 text-left">BOOKING ID</th>
+                            <th class="p-3 text-left">CUSTOMER DETAILS</th>
+                            <th class="p-3 text-left">PHONE NO</th>
+                            <th class="p-3 text-left">MACHINE</th>
+                            <th class="p-3 text-left">DATES</th>
+                            <th class="p-3 text-left">TOTAL COST</th>
+                            <th class="p-3 text-left">STATUS</th>
+                            <th class="p-3 text-left">ACTIONS</th>
+                        </tr>
+                        </thead>
+                        <tbody id="bookingTable" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. MACHINE MANAGEMENT SECTION -->
+        <section id="sec-machine" class="tab-sec hidden space-y-6">
+            <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">MACHINE MANAGEMENT</h1>
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">🚜 Add / Edit Machinery</h2>
+                <form onsubmit="event.preventDefault(); saveMachine();" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input type="hidden" id="mId">
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">MODEL NAME</label><input type="text" id="mName" placeholder="e.g. JCB 3CX Backhoe" class="w-full border rounded px-3 py-2 text-sm focus:outline-none" required></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">HOURLY RATE (LKR)</label><input type="number" id="mRate" placeholder="3400" class="w-full border rounded px-3 py-2 text-sm focus:outline-none" required></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">IMAGE URL</label><input type="text" id="mImage" placeholder="https://..." class="w-full border rounded px-3 py-2 text-sm focus:outline-none"></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">STATUS</label><select id="mStatus" class="w-full border rounded px-3 py-2 text-sm bg-white"><option value="Available">Available</option><option value="Under Maintenance">Under Maintenance</option><option value="Booked">Booked</option></select></div>
+                    <div class="col-span-full"><button type="submit" class="bg-black text-white text-xs font-bold px-4 py-2.5 rounded hover:bg-gray-800">💾 Save Machinery</button></div>
+                </form>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📊 Fleet Machinery List</h2>
+                <table class="w-full text-sm border-collapse"><thead class="bg-[#1e293b] text-white text-xs font-bold uppercase"><tr><th class="p-3 text-left">ID</th><th class="p-3 text-left">IMAGE</th><th class="p-3 text-left">MODEL NAME</th><th class="p-3 text-left">RATE/HR</th><th class="p-3 text-left">STATUS</th><th class="p-3 text-left">ACTION</th></tr></thead><tbody id="mTable" class="divide-y divide-gray-100"></tbody></table>
+            </div>
+        </section>
+
+        <!-- 4. OPERATOR MANAGEMENT SECTION -->
+        <section id="sec-operator" class="tab-sec hidden space-y-6">
+            <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">OPERATOR MANAGEMENT</h1>
+
+            <div id="opAlertBanner" class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl flex items-center justify-between hidden">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">⚠️</span>
+                    <div>
+                        <h3 class="font-bold text-amber-900 text-sm">Operator Assignment Attention Required</h3>
+                        <p class="text-xs text-amber-700">Some machinery in your fleet currently have no operator assigned.</p>
+                    </div>
+                </div>
+                <span id="unassignedOpCount" class="bg-red-600 text-white font-black text-xs px-3 py-1 rounded-full">0 Unassigned</span>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-bold text-black flex items-center gap-2">
+                        <span>🚜</span> Fleet Machinery Operator Assignment Overview
+                    </h2>
+                    <span class="text-xs font-bold text-gray-500" id="opOverviewStats">Loading overview...</span>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-sm border-collapse">
+                        <thead class="bg-[#1e293b] text-white text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-3 text-left">MACHINE ID</th>
+                            <th class="p-3 text-left">MACHINE NAME</th>
+                            <th class="p-3 text-left">ASSIGNMENT STATUS</th>
+                            <th class="p-3 text-left">ASSIGNED OPERATOR & LICENSE</th>
+                        </tr>
+                        </thead>
+                        <tbody id="machineOpOverviewTable" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">👷 Add / Edit Operator</h2>
+                <form onsubmit="event.preventDefault(); saveOperator();" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input type="hidden" id="opId">
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">OPERATOR NAME</label><input type="text" id="opName" placeholder="e.g. Kasun Kalhara" class="w-full border rounded px-3 py-2 text-sm" required></div>
+
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">CONTACT NUMBER</label>
+                        <input
+                                type="text"
+                                id="opContact"
+                                placeholder="0771234568"
+                                maxlength="10"
+                                oninput="validatePhoneInput(this)"
+                                class="w-full border rounded px-3 py-2 text-sm focus:outline-none transition-colors"
+                                required
+                        >
+                        <p id="opContactError" class="text-xs text-red-600 font-bold mt-1 hidden"></p>
+                    </div>
+
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">LICENSE NUMBER</label><input type="text" id="opLicense" placeholder="OL-982345" class="w-full border rounded px-3 py-2 text-sm" required></div>
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-500 block mb-1">ASSIGNED MACHINE</label>
+                        <select id="opMachineId" class="w-full border rounded px-3 py-2 text-sm bg-white">
+                            <option value="">Select Machine (or Leave Unassigned)...</option>
+                        </select>
+                    </div>
+                    <div class="col-span-full"><button type="submit" class="bg-black text-white text-xs font-bold px-4 py-2.5 rounded hover:bg-gray-800">💾 Save Operator</button></div>
+                </form>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📊 Registered Operators List</h2>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-sm border-collapse">
+                        <thead class="bg-[#1e293b] text-white text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-3 text-left">ID</th>
+                            <th class="p-3 text-left">NAME</th>
+                            <th class="p-3 text-left">CONTACT</th>
+                            <th class="p-3 text-left">LICENSE NO</th>
+                            <th class="p-3 text-left">ASSIGNED MACHINE</th>
+                            <th class="p-3 text-left">STATUS</th>
+                            <th class="p-3 text-left">ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody id="opTable" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. INVENTORY & PARTS SECTION -->
+        <section id="sec-inventory" class="tab-sec hidden space-y-6">
+            <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">INVENTORY & PARTS MANAGEMENT</h1>
+
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🔔</span>
+                    <div>
+                        <h3 class="font-bold text-amber-900 text-sm">Spare Parts Requests Notification</h3>
+                        <p class="text-xs text-amber-700">Review parts requested by the maintenance crew below.</p>
+                    </div>
+                </div>
+                <span id="pendingReqCount" class="bg-amber-500 text-white font-black text-xs px-3 py-1 rounded-full">0 Pending</span>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4 flex items-center gap-2"><span>📦</span> Maintenance Spare Part Requests</h2>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-sm border-collapse">
+                        <thead class="bg-[#1e293b] text-white text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-3 text-left">REQ ID</th>
+                            <th class="p-3 text-left">FOR MACHINE</th>
+                            <th class="p-3 text-left">REQUESTED ITEM</th>
+                            <th class="p-3 text-left">QTY</th>
+                            <th class="p-3 text-left">STATUS</th>
+                            <th class="p-3 text-left">ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody id="partReqTable" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📦 Add / Edit Inventory Item</h2>
+                <form onsubmit="event.preventDefault(); saveInventory();" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="hidden" id="invId">
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">ITEM NAME</label><input type="text" id="invName" placeholder="Hydraulic Oil 20L" class="w-full border rounded px-3 py-2 text-sm" required></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">QUANTITY IN STOCK</label><input type="number" id="invQty" placeholder="10" class="w-full border rounded px-3 py-2 text-sm" required></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">UNIT PRICE (LKR)</label><input type="number" id="invPrice" placeholder="15000" class="w-full border rounded px-3 py-2 text-sm" required></div>
+                    <div class="col-span-full"><button type="submit" class="bg-black text-white text-xs font-bold px-4 py-2.5 rounded">💾 Save Inventory Item</button></div>
+                </form>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📊 Stock Inventory List</h2>
+                <table class="w-full text-sm border-collapse"><thead class="bg-[#1e293b] text-white text-xs font-bold uppercase"><tr><th class="p-3 text-left">ID</th><th class="p-3 text-left">ITEM NAME</th><th class="p-3 text-left">QTY</th><th class="p-3 text-left">UNIT PRICE</th><th class="p-3 text-left">ACTION</th></tr></thead><tbody id="invTable" class="divide-y divide-gray-100"></tbody></table>
+            </div>
+        </section>
+
+        <!-- 6. MAINTENANCE SECTION -->
+        <section id="sec-maintenance" class="tab-sec hidden space-y-6">
+            <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">MAINTENANCE MANAGEMENT</h1>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
+                <h2 class="text-base font-bold text-black flex items-center gap-2"><span>🔧</span> Add / Edit Maintenance Log & Request Spare Part</h2>
+
+                <form onsubmit="event.preventDefault(); saveMaintenanceWithPart();" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input type="hidden" id="maintId">
+
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-600 block mb-1">SELECT MACHINE</label>
+                        <select id="maintMachineId" class="w-full border rounded px-3 py-2 text-sm bg-white" required>
+                            <option value="">Select Machine...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-600 block mb-1">DESCRIPTION</label>
+                        <input type="text" id="maintDesc" placeholder="Engine service & oil filter change" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-600 block mb-1">ESTIMATED COST (LKR)</label>
+                        <input type="number" id="maintCost" placeholder="25000" class="w-full border rounded px-3 py-2 text-sm" required>
+                    </div>
+
+                    <div>
+                        <label class="text-[11px] font-bold text-gray-600 block mb-1">MAINTENANCE TASK STATUS</label>
+                        <select id="maintTaskStatus" class="w-full border rounded px-3 py-2 text-sm bg-white font-bold text-blue-700">
+                            <option value="IN_PROGRESS">🟡 IN PROGRESS (Maintaining)</option>
+                            <option value="COMPLETED">🟢 COMPLETED (Available)</option>
+                            <option value="PENDING">🔴 PENDING</option>
+                        </select>
+                    </div>
+
+                    <div class="col-span-full bg-yellow-50 border border-yellow-200 rounded-lg p-3.5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[11px] font-bold text-amber-900 block mb-1">📦 REQUEST SPARE PART (OPTIONAL)</label>
+                            <select id="reqPartId" class="w-full border border-yellow-300 rounded px-3 py-2 text-sm bg-white">
+                                <option value="">No Spare Part Required</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-amber-900 block mb-1">QUANTITY NEEDED</label>
+                            <input type="number" id="reqQty" value="1" min="1" class="w-full border border-yellow-300 rounded px-3 py-2 text-sm bg-white">
+                        </div>
+                    </div>
+
+                    <div class="col-span-full">
+                        <button type="submit" id="btnSaveMaint" class="bg-black hover:bg-gray-800 text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2">
+                            <span>🔧</span> Log Maintenance & Send Request to Inventory
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📊 Maintenance Records</h2>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-sm border-collapse">
+                        <thead class="bg-[#1e293b] text-white text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-3 text-left">LOG ID</th>
+                            <th class="p-3 text-left">MACHINE</th>
+                            <th class="p-3 text-left">DESCRIPTION</th>
+                            <th class="p-3 text-left">COST</th>
+                            <th class="p-3 text-left">WORK STATUS</th>
+                            <th class="p-3 text-left">REQUESTED PART STATUS</th>
+                            <th class="p-3 text-left">ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody id="maintTable" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. PAYMENTS & RECEIPTS SECTION -->
+        <section id="sec-payment" class="tab-sec hidden space-y-6">
+            <h1 class="text-4xl font-black font-condensed tracking-wide text-black uppercase">PAYMENT & RECEIPT MANAGEMENT</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-black text-white p-5 rounded-xl shadow-sm">
+                    <div class="text-3xl font-black font-condensed text-white" id="pStatTotal">LKR 0</div>
+                    <div class="text-xs font-bold text-white/70 uppercase">Total Collected</div>
+                </div>
+                <div class="bg-[#F5C200] text-black p-5 rounded-xl shadow-sm">
+                    <div class="text-3xl font-black font-condensed text-black" id="pStatComp">0</div>
+                    <div class="text-xs font-bold text-black/70 uppercase">Completed Payments</div>
+                </div>
+                <div class="bg-white border border-gray-200 text-black p-5 rounded-xl shadow-sm">
+                    <div class="text-3xl font-black font-condensed text-orange-600" id="pStatPend">0</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase">Pending Payments</div>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">💳 1. Create / Edit Physical Payment Record</h2>
+                <form onsubmit="event.preventDefault(); savePay();" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input type="hidden" id="pId">
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">CUSTOMER EMAIL</label><input type="email" id="pEmail" placeholder="customer@example.com" class="w-full border rounded px-3 py-2 text-sm" required></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">AMOUNT (LKR)</label><input type="number" id="pAmount" placeholder="81600" class="w-full border rounded px-3 py-2 text-sm" required></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">PAYMENT METHOD</label><select id="pMethod" class="w-full border rounded px-3 py-2 text-sm bg-white"><option value="CASH / PHYSICAL">CASH / PHYSICAL</option><option value="CARD">CARD</option><option value="BANK TRANSFER">BANK TRANSFER</option></select></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 block mb-1">PAYMENT STATUS</label><select id="pStatus" class="w-full border rounded px-3 py-2 text-sm bg-white"><option value="PENDING">PENDING</option><option value="COMPLETED">COMPLETED</option></select></div>
+                    <div class="col-span-full"><button type="submit" class="bg-black text-white text-xs font-bold px-4 py-2.5 rounded">💾 Save Payment Record</button></div>
+                </form>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-black mb-4">📊 2. All Payment Transactions</h2>
+                <table class="w-full text-sm border-collapse"><thead class="bg-[#1e293b] text-white text-xs font-bold uppercase"><tr><th class="p-3 text-left">PAY ID</th><th class="p-3 text-left">BOOKING REF</th><th class="p-3 text-left">CUSTOMER EMAIL</th><th class="p-3 text-left">AMOUNT (LKR)</th><th class="p-3 text-left">METHOD</th><th class="p-3 text-left">DATE</th><th class="p-3 text-left">STATUS</th><th class="p-3 text-left">ACTIONS & RECEIPT</th></tr></thead><tbody id="payTable" class="divide-y divide-gray-100"></tbody></table>
+                <button onclick="loadPayments()" class="bg-[#2d3748] text-white text-xs font-bold px-3 py-1.5 rounded mt-3">🔄 Refresh List</button>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    let globalMachines = [];
+    let globalOperators = [];
+    let globalInventory = [];
+    let globalPayments = [];
+    let globalMaintenance = [];
+    let globalBookings = [];
+    let globalPartRequests = [
+        { id: 101, machineId: 12, partName: 'Hydraulic Seal Kit', qty: 2, status: 'PENDING' }
+    ];
+
+    function getItemName(item) {
+        if (!item) return 'Unknown Item';
+        return item.itemName || item.name || item.partName || item.item_name || item.title || '';
+    }
+
+    function getItemQty(item) {
+        if (!item) return 0;
+        if (item.quantity !== undefined && item.quantity !== null) return item.quantity;
+        if (item.qty !== undefined && item.qty !== null) return item.qty;
+        if (item.stockQuantity !== undefined && item.stockQuantity !== null) return item.stockQuantity;
+        return 0;
+    }
+
+    function switchTab(tabKey) {
+        document.querySelectorAll('.tab-sec').forEach(s => s.classList.add('hidden'));
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            b.className = "w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-semibold text-black/80 hover:bg-black/10 nav-btn";
+        });
+
+        document.getElementById(`sec-${tabKey}`).classList.remove('hidden');
+        let activeBtn = document.getElementById(`btn-${tabKey}`);
+        if (activeBtn) {
+            activeBtn.className = "w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-base font-bold bg-black text-white shadow nav-btn";
+        }
+
+        if(tabKey==='dashboard') loadDashboard();
+        if(tabKey==='booking') loadBookings();
+        if(tabKey==='machine') loadMachines();
+        if(tabKey==='operator') loadOperators();
+        if(tabKey==='inventory') loadInventory();
+        if(tabKey==='maintenance') loadMaintenance();
+        if(tabKey==='payment') loadPayments();
+    }
+
+    // 1. DASHBOARD LOAD WITH LOW STOCK CHECK
+    function loadDashboard() {
+        Promise.all([
+            fetch('/api/machines').then(r=>r.json()).catch(()=>[]),
+            fetch('/api/operators').then(r=>r.json()).catch(()=>[]),
+            fetch('/api/inventory').then(r=>r.json()).catch(()=>[]),
+            fetch('/api/payments').then(r=>r.json()).catch(()=>[])
+        ]).then(([m, op, inv, pay]) => {
+            document.getElementById('d-machines').innerText = m.length;
+            document.getElementById('d-operators').innerText = op.length;
+            document.getElementById('d-inventory').innerText = inv.length;
+
+            let availCount = m.filter(x => (x.status || 'Available').toLowerCase() === 'available').length;
+            document.getElementById('d-machines-avail').innerText = `${availCount} Available`;
+            document.getElementById('d-part-reqs').innerText = `${globalPartRequests.filter(r=>r.status==='PENDING').length} Pending Requests`;
+
+            // Inventory Low Stock Check (Items with Quantity < 5)
+            let lowStockItems = (inv || []).filter(item => getItemQty(item) < 5);
+            let lowStockElem = document.getElementById('d-low-stock');
+            let lowStockText = document.getElementById('d-low-stock-text');
+
+            if (lowStockItems.length > 0) {
+                lowStockText.innerText = `⚠️ ${lowStockItems.length} Low Stock Alert (<5)`;
+                lowStockElem.classList.remove('hidden');
+            } else {
+                lowStockElem.classList.add('hidden');
+            }
+
+            let rev = 0;
+            (pay||[]).forEach(p => { if(p.status==='COMPLETED') rev += (p.amount||0); });
+            document.getElementById('d-revenue').innerText = 'LKR ' + rev.toLocaleString();
+
+            let tbody = document.getElementById('d-fleetTable'); tbody.innerHTML = '';
+            (m||[]).forEach(x => {
+                let isAvail = (x.status || 'Available').toLowerCase() === 'available';
+                tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${x.id}</td>
+                            <td class="p-3 font-bold uppercase">${x.modelName}</td>
+                            <td class="p-3">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-full ${isAvail ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${isAvail ? '<span class="w-2 h-2 rounded-full bg-green-500 pulse-green"></span>' : ''}
+                                    ${x.status || 'Available'}
+                                </span>
+                            </td>
+                            <td class="p-3 font-bold text-amber-700">LKR ${(x.hourlyRate||0).toLocaleString()}</td>
+                        </tr>`;
+            });
+        });
+    }
+
+    // 2. BOOKINGS LOAD & SAVE
+    function loadBookings() {
+        loadMachines();
+
+        fetch('/api/bookings')
+            .then(r => r.json())
+            .then(data => {
+                globalBookings = data || [];
+                let tbody = document.getElementById('bookingTable');
+                tbody.innerHTML = '';
+
+                if(globalBookings.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-gray-400 font-semibold">No bookings registered yet.</td></tr>';
+                    return;
+                }
+
+                globalBookings.forEach(b => {
+                    let mName = b.machine ? b.machine.modelName : (b.machineId ? `Machine #${b.machineId}` : 'N/A');
+                    let priceVal = b.totalPrice !== undefined ? b.totalPrice : (b.totalCost || 0);
+
+                    let statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200">PENDING</span>`;
+                    if (b.status === 'CONFIRMED') {
+                        statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">CONFIRMED</span>`;
+                    } else if (b.status === 'CANCELLED') {
+                        statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">CANCELLED</span>`;
+                    } else if (b.status === 'COMPLETED') {
+                        statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">COMPLETED</span>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${b.id}</td>
+                            <td class="p-3">
+                                <div class="font-bold text-gray-900">${b.customerName || 'N/A'}</div>
+                                <div class="text-xs text-blue-600 font-semibold">${b.customerEmail || 'N/A'}</div>
+                            </td>
+                            <td class="p-3 font-bold text-gray-700">${b.phoneNumber || 'N/A'}</td>
+                            <td class="p-3 font-bold uppercase">🚜 ${mName}</td>
+                            <td class="p-3 text-xs text-gray-600 font-semibold">${b.startDate || ''} ➔ ${b.endDate || ''}</td>
+                            <td class="p-3 font-bold text-amber-700">LKR ${priceVal.toLocaleString()}</td>
+                            <td class="p-3">${statusBadge}</td>
+                            <td class="p-3 flex items-center gap-2">
+                                <button onclick="editBooking(${b.id})" class="text-xs bg-blue-50 text-blue-600 px-3 py-1 font-bold rounded border border-blue-200 hover:bg-blue-100">Edit</button>
+                                <button onclick="deleteBooking(${b.id})" class="text-xs bg-red-50 text-red-600 px-3 py-1 font-bold rounded border border-red-200 hover:bg-red-100">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+    }
+
+    function saveBooking() {
+        let id = document.getElementById('bkId').value;
+        let mId = document.getElementById('bkMachineId').value;
+        let costVal = parseFloat(document.getElementById('bkCost').value);
+
+        let payload = {
+            customerName: document.getElementById('bkName').value,
+            customerEmail: document.getElementById('bkEmail').value,
+            phoneNumber: document.getElementById('bkPhone').value,
+            machine: { id: parseInt(mId) },
+            startDate: document.getElementById('bkStartDate').value,
+            endDate: document.getElementById('bkEndDate').value,
+            totalPrice: costVal,
+            totalCost: costVal,
+            status: document.getElementById('bkStatus').value
+        };
+
+        let isEdit = id !== '';
+        let url = isEdit ? `/api/bookings/${id}` : '/api/bookings';
+        let method = isEdit ? 'PUT' : 'POST';
+
+        fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            alert(isEdit ? "✅ Booking Updated!" : "✅ Booking Saved Successfully!");
+            resetBookingForm();
+            loadBookings();
+        });
+    }
+
+    function editBooking(id) {
+        let b = globalBookings.find(x => x.id === id);
+        if (b) {
+            document.getElementById('bkId').value = b.id;
+            document.getElementById('bkName').value = b.customerName || '';
+            document.getElementById('bkEmail').value = b.customerEmail || '';
+            document.getElementById('bkPhone').value = b.phoneNumber || '';
+            document.getElementById('bkMachineId').value = b.machine ? b.machine.id : (b.machineId || '');
+            document.getElementById('bkStartDate').value = b.startDate || '';
+            document.getElementById('bkEndDate').value = b.endDate || '';
+            document.getElementById('bkCost').value = b.totalPrice !== undefined ? b.totalPrice : (b.totalCost || 0);
+            document.getElementById('bkStatus').value = b.status || 'PENDING';
+        }
+    }
+
+    function resetBookingForm() {
+        document.getElementById('bkId').value = '';
+        document.getElementById('bkName').value = '';
+        document.getElementById('bkEmail').value = '';
+        document.getElementById('bkPhone').value = '';
+        document.getElementById('bkMachineId').value = '';
+        document.getElementById('bkStartDate').value = '';
+        document.getElementById('bkEndDate').value = '';
+        document.getElementById('bkCost').value = '';
+        document.getElementById('bkStatus').value = 'PENDING';
+    }
+
+    function deleteBooking(id) {
+        if (confirm(`Are you sure you want to delete Booking #${id}?`)) {
+            fetch(`/api/bookings/${id}`, { method: 'DELETE' }).then(() => loadBookings());
+        }
+    }
+
+    // 3. MACHINES LOAD & SAVE
+    function loadMachines() {
+        fetch('/api/machines').then(r=>r.json()).then(data => {
+            globalMachines = data || [];
+            let tbody = document.getElementById('mTable'); tbody.innerHTML = '';
+            let dropdowns = [
+                document.getElementById('opMachineId'),
+                document.getElementById('maintMachineId'),
+                document.getElementById('bkMachineId')
+            ];
+            dropdowns.forEach(d => {
+                if(d) {
+                    d.innerHTML = d.id === 'opMachineId' ? '<option value="">Select Machine (or Leave Unassigned)...</option>' : '<option value="">Select Machine...</option>';
+                }
+            });
+
+            globalMachines.forEach(m => {
+                let img = m.imageUrl || 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=800&q=80';
+                let isAvail = (m.status || 'Available').toLowerCase() === 'available';
+                tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${m.id}</td>
+                            <td class="p-3"><img src="${img}" class="w-10 h-8 object-cover rounded"></td>
+                            <td class="p-3 font-bold uppercase">${m.modelName}</td>
+                            <td class="p-3 font-bold">LKR ${(m.hourlyRate||0).toLocaleString()}</td>
+                            <td class="p-3">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-bold rounded-full ${isAvail ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${isAvail ? '<span class="w-2 h-2 rounded-full bg-green-500 pulse-green"></span>' : ''}
+                                    ${m.status || 'Available'}
+                                </span>
+                            </td>
+                            <td class="p-3 flex gap-2">
+                                <button onclick="editMachine(${m.id})" class="text-xs bg-blue-50 text-blue-600 px-2 py-1 font-bold rounded border border-blue-200">Edit</button>
+                                <button onclick="deleteMachine(${m.id})" class="text-xs bg-red-50 text-red-600 px-2 py-1 font-bold rounded border border-red-200">Delete</button>
+                            </td>
+                        </tr>`;
+                dropdowns.forEach(d => { if(d) d.innerHTML += `<option value="${m.id}">#${m.id} - ${m.modelName}</option>`; });
+            });
+        });
+    }
+
+    function saveMachine() {
+        let id = document.getElementById('mId').value;
+        let payload = { modelName: document.getElementById('mName').value, hourlyRate: parseFloat(document.getElementById('mRate').value), imageUrl: document.getElementById('mImage').value, status: document.getElementById('mStatus').value };
+        fetch(id?`/api/machines/${id}`:'/api/machines', { method: id?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).then(()=>{ document.getElementById('mId').value=''; document.getElementById('mName').value=''; document.getElementById('mRate').value=''; loadMachines(); });
+    }
+    function editMachine(id) { let m = globalMachines.find(x=>x.id===id); if(m){ document.getElementById('mId').value=m.id; document.getElementById('mName').value=m.modelName; document.getElementById('mRate').value=m.hourlyRate; document.getElementById('mImage').value=m.imageUrl||''; document.getElementById('mStatus').value=m.status||'Available'; } }
+    function deleteMachine(id) { if(confirm("Delete Machine?")) fetch(`/api/machines/${id}`, {method:'DELETE'}).then(()=>loadMachines()); }
+
+    // 4. OPERATORS LOAD
+    function loadOperators() {
+        Promise.all([
+            fetch('/api/machines').then(r=>r.json()).catch(()=>[]),
+            fetch('/api/operators').then(r=>r.json()).catch(()=>[])
+        ]).then(([machines, operators]) => {
+            globalMachines = machines || [];
+            globalOperators = operators || [];
+
+            let overviewTbody = document.getElementById('machineOpOverviewTable');
+            overviewTbody.innerHTML = '';
+
+            let assignedCount = 0;
+            let unassignedCount = 0;
+
+            if (globalMachines.length === 0) {
+                overviewTbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-400">No machinery registered in fleet.</td></tr>';
+            } else {
+                globalMachines.forEach(m => {
+                    let op = globalOperators.find(o => (o.machine && o.machine.id == m.id) || o.machineId == m.id);
+                    let isAssigned = op != null;
+
+                    if (isAssigned) assignedCount++; else unassignedCount++;
+
+                    let operatorInfoHTML = isAssigned ? `
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-bold text-gray-900 flex items-center gap-1">
+                                <span>👷</span> ${op.name}
+                            </span>
+                            <span class="text-[11px] font-mono font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
+                                Lic: ${op.licenseNumber || 'N/A'}
+                            </span>
+                            <span class="text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
+                                📞 ${op.contactNumber || 'No Contact'}
+                            </span>
+                        </div>
+                    ` : `<span class="text-xs text-gray-400 font-semibold italic">No operator assigned yet</span>`;
+
+                    overviewTbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${m.id}</td>
+                            <td class="p-3 font-bold uppercase text-black">🚜 ${m.modelName}</td>
+                            <td class="p-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isAssigned ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}">
+                                    <span class="w-2.5 h-2.5 rounded-full ${isAssigned ? 'bg-green-500 pulse-green' : 'bg-red-500 pulse-red'}"></span>
+                                    ${isAssigned ? 'ASSIGNED' : 'NOT ASSIGNED'}
+                                </span>
+                            </td>
+                            <td class="p-3">
+                                ${operatorInfoHTML}
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('opOverviewStats').innerText = `${assignedCount} Assigned / ${unassignedCount} Unassigned Machines`;
+
+            let opBadge = document.getElementById('opReqBadge');
+            let topOpBadge = document.getElementById('topOpReqBadge');
+            let alertBanner = document.getElementById('opAlertBanner');
+            let unassignedCountSpan = document.getElementById('unassignedOpCount');
+
+            if (unassignedCount > 0) {
+                opBadge.innerText = unassignedCount;
+                opBadge.classList.remove('hidden');
+                topOpBadge.classList.remove('hidden');
+                alertBanner.classList.remove('hidden');
+                unassignedCountSpan.innerText = `${unassignedCount} Unassigned`;
+            } else {
+                opBadge.classList.add('hidden');
+                topOpBadge.classList.add('hidden');
+                alertBanner.classList.add('hidden');
+            }
+
+            let dropdown = document.getElementById('opMachineId');
+            dropdown.innerHTML = '<option value="">Select Machine (or Leave Unassigned)...</option>';
+            globalMachines.forEach(m => {
+                dropdown.innerHTML += `<option value="${m.id}">#${m.id} - ${m.modelName}</option>`;
+            });
+
+            let opTbody = document.getElementById('opTable');
+            opTbody.innerHTML = '';
+
+            if(globalOperators.length === 0) {
+                opTbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-400 font-semibold">No operators registered yet.</td></tr>';
+                return;
+            }
+
+            globalOperators.forEach(o => {
+                let hasMachine = o.machine || o.machineId;
+                let mName = o.machine ? o.machine.modelName : (o.machineId ? `Machine #${o.machineId}` : 'Not Assigned');
+
+                opTbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 font-bold">#${o.id}</td>
+                        <td class="p-3 font-bold text-gray-800">${o.name}</td>
+                        <td class="p-3 text-gray-600 font-semibold">${o.contactNumber || 'N/A'}</td>
+                        <td class="p-3 font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded w-fit">${o.licenseNumber || 'N/A'}</td>
+                        <td class="p-3 font-bold ${hasMachine ? 'text-amber-800' : 'text-gray-400'}">
+                            ${hasMachine ? `🚜 ${mName}` : '—'}
+                        </td>
+                        <td class="p-3">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${hasMachine ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}">
+                                <span class="w-2.5 h-2.5 rounded-full ${hasMachine ? 'bg-green-500 pulse-green' : 'bg-red-500 pulse-red'}"></span>
+                                ${hasMachine ? 'ASSIGNED' : 'NOT ASSIGNED'}
+                            </span>
+                        </td>
+                        <td class="p-3 flex items-center gap-2">
+                            <button onclick="editOp(${o.id})" class="text-xs bg-blue-50 text-blue-600 px-3 py-1 font-bold rounded border border-blue-200 hover:bg-blue-100">Edit</button>
+                            <button onclick="deleteOp(${o.id})" class="text-xs bg-red-50 text-red-600 px-3 py-1 font-bold rounded border border-red-200 hover:bg-red-100">Delete</button>
+                        </td>
+                    </tr>`;
+            });
+        });
+    }
+
+    function validatePhoneInput(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        let errorP = document.getElementById('opContactError');
+
+        if (input.value.length === 0) {
+            errorP.innerText = "Phone number is required!";
+            errorP.classList.remove('hidden');
+            input.classList.add('border-red-500');
+            input.classList.remove('border-green-500');
+            return false;
+        } else if (input.value.length < 10) {
+            errorP.innerText = `Must be exactly 10 digits (${input.value.length}/10)`;
+            errorP.classList.remove('hidden');
+            input.classList.add('border-red-500');
+            input.classList.remove('border-green-500');
+            return false;
+        } else {
+            errorP.innerText = "";
+            errorP.classList.add('hidden');
+            input.classList.remove('border-red-500');
+            input.classList.add('border-green-500');
+            return true;
+        }
+    }
+
+    function saveOperator() {
+        let contactInput = document.getElementById('opContact');
+
+        if (!validatePhoneInput(contactInput)) {
+            alert("⚠️ Please enter a valid 10-digit Phone Number before saving!");
+            contactInput.focus();
+            return;
+        }
+
+        let id = document.getElementById('opId').value;
+        let mId = document.getElementById('opMachineId').value;
+        let payload = {
+            name: document.getElementById('opName').value,
+            contactNumber: contactInput.value,
+            licenseNumber: document.getElementById('opLicense').value,
+            machine: mId ? { id: parseInt(mId) } : null
+        };
+
+        fetch(id ? `/api/operators/${id}` : '/api/operators', {
+            method: id ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            document.getElementById('opId').value = '';
+            document.getElementById('opName').value = '';
+            contactInput.value = '';
+            document.getElementById('opLicense').value = '';
+            document.getElementById('opMachineId').value = '';
+
+            contactInput.classList.remove('border-green-500', 'border-red-500');
+            document.getElementById('opContactError').classList.add('hidden');
+
+            loadOperators();
+        });
+    }
+
+    function editOp(id) {
+        let o = globalOperators.find(x => x.id === id);
+        if(o) {
+            document.getElementById('opId').value = o.id;
+            document.getElementById('opName').value = o.name;
+            let contactInput = document.getElementById('opContact');
+            contactInput.value = o.contactNumber || '';
+            validatePhoneInput(contactInput);
+            document.getElementById('opLicense').value = o.licenseNumber || '';
+            let assignedId = o.machine ? o.machine.id : (o.machineId || '');
+            document.getElementById('opMachineId').value = assignedId;
+        }
+    }
+
+    function deleteOp(id) {
+        if(confirm("Are you sure you want to delete this operator?")) {
+            fetch(`/api/operators/${id}`, { method: 'DELETE' }).then(() => loadOperators());
+        }
+    }
+
+    // 5. INVENTORY & PART REQUEST NOTIFICATION SYSTEM
+    function loadInventory() {
+        fetch('/api/inventory').then(r=>r.json()).then(data => {
+            globalInventory = data || [];
+            let tbody = document.getElementById('invTable'); tbody.innerHTML = '';
+            let reqPartDropdown = document.getElementById('reqPartId');
+            if(reqPartDropdown) reqPartDropdown.innerHTML = '<option value="">No Spare Part Required</option>';
+
+            globalInventory.forEach(i => {
+                let name = getItemName(i);
+                let qty = getItemQty(i);
+                let price = i.unitPrice !== undefined ? i.unitPrice : (i.price || 0);
+
+                tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${i.id}</td>
+                            <td class="p-3 font-bold text-gray-800">${name}</td>
+                            <td class="p-3 font-bold text-blue-600">${qty} units</td>
+                            <td class="p-3 font-bold">LKR ${price.toLocaleString()}</td>
+                            <td class="p-3 flex gap-2">
+                                <button onclick="editInv(${i.id})" class="text-xs bg-blue-50 text-blue-600 px-2 py-1 font-bold rounded border">Edit</button>
+                                <button onclick="deleteInv(${i.id})" class="text-xs bg-red-50 text-red-600 px-2 py-1 font-bold rounded border">Delete</button>
+                            </td>
+                        </tr>`;
+
+                if(reqPartDropdown && name) {
+                    reqPartDropdown.innerHTML += `<option value="${name}">${name} (${qty} in stock)</option>`;
+                }
+            });
+        }).catch(err => {
+            console.error("Error loading inventory:", err);
+        });
+
+        renderPartRequests();
+    }
+
+    function renderPartRequests() {
+        let tbody = document.getElementById('partReqTable');
+        tbody.innerHTML = '';
+        let pending = globalPartRequests.filter(r => r.status === 'PENDING').length;
+
+        document.getElementById('pendingReqCount').innerText = `${pending} Pending`;
+        let badge = document.getElementById('partReqBadge');
+        let topBadge = document.getElementById('topPartReqBadge');
+
+        if (pending > 0) {
+            badge.innerText = pending;
+            badge.classList.remove('hidden');
+            topBadge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+            topBadge.classList.add('hidden');
+        }
+
+        globalPartRequests.forEach(r => {
+            let partName = r.partName || r.itemName || r.name || 'Spare Part';
+            let mId = r.machineId || '--';
+
+            tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 font-bold">#REQ-${r.id}</td>
+                        <td class="p-3 font-semibold text-amber-800">🚜 Machine #${mId}</td>
+                        <td class="p-3 font-bold text-gray-800">${partName}</td>
+                        <td class="p-3 font-bold text-blue-600">${r.qty || r.quantity || 1}</td>
+                        <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${r.status==='APPROVED'?'bg-green-100 text-green-800 border border-green-200':'bg-yellow-100 text-yellow-800 border border-yellow-200'}">${r.status}</span></td>
+                        <td class="p-3">
+                            ${r.status === 'PENDING' ? `<button onclick="approvePartReq(${r.id})" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1 rounded shadow-sm">✔ Approve Request</button>` : '<span class="text-xs text-gray-400 font-bold">Dispatched</span>'}
+                        </td>
+                    </tr>`;
+        });
+    }
+
+    // Approve Part Request & Deduct Stock Quantity Automatically
+    function approvePartReq(id) {
+        let req = globalPartRequests.find(r => r.id === id);
+        if (!req) return;
+
+        let partName = req.partName || req.itemName || 'Spare Part';
+        let reqQty = parseInt(req.qty || req.quantity || 1);
+
+        // 1. Find matching item in globalInventory
+        let invItem = globalInventory.find(i => getItemName(i).toLowerCase() === partName.toLowerCase());
+
+        if (!invItem) {
+            alert(`⚠️ Warning: "${partName}" is not found in your Stock Inventory List!`);
+            req.status = 'APPROVED';
+            renderPartRequests();
+            loadMaintenance();
+            return;
+        }
+
+        let currentQty = getItemQty(invItem);
+
+        // 2. Check if enough stock is available
+        if (currentQty < reqQty) {
+            alert(`❌ Insufficient stock! Required: ${reqQty}, Available in Stock: ${currentQty}`);
+            return;
+        }
+
+        // 3. Deduct requested quantity
+        let updatedQty = currentQty - reqQty;
+
+        // Build API payload to update backend inventory
+        let payload = {
+            itemName: getItemName(invItem),
+            name: getItemName(invItem),
+            quantity: updatedQty,
+            qty: updatedQty,
+            stockQuantity: updatedQty,
+            unitPrice: invItem.unitPrice !== undefined ? invItem.unitPrice : (invItem.price || 0),
+            price: invItem.unitPrice !== undefined ? invItem.unitPrice : (invItem.price || 0)
+        };
+
+        // 4. Update Inventory via Backend API Call
+        fetch(`/api/inventory/${invItem.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => {
+                req.status = 'APPROVED';
+                alert(`✅ Request Approved! ${reqQty} units of "${partName}" deducted from stock. Remaining: ${updatedQty}`);
+                loadInventory(); // Refresh Inventory list & Part requests table
+                loadMaintenance(); // Refresh Maintenance table
+                loadDashboard(); // Refresh Dashboard low stock warning
+            })
+            .catch(err => {
+                // Fallback for local update if API is offline
+                invItem.quantity = updatedQty;
+                invItem.qty = updatedQty;
+                invItem.stockQuantity = updatedQty;
+                req.status = 'APPROVED';
+                alert(`✅ Request Approved! Stock updated locally (${reqQty} units deducted). Remaining: ${updatedQty}`);
+                loadInventory();
+                loadMaintenance();
+                loadDashboard();
+            });
+    }
+
+    function saveInventory() {
+        let id = document.getElementById('invId').value;
+        let nameVal = document.getElementById('invName').value;
+        let qtyVal = parseInt(document.getElementById('invQty').value);
+        let priceVal = parseFloat(document.getElementById('invPrice').value);
+
+        let payload = {
+            itemName: nameVal,
+            name: nameVal,
+            quantity: qtyVal,
+            qty: qtyVal,
+            stockQuantity: qtyVal,
+            unitPrice: priceVal,
+            price: priceVal
+        };
+
+        fetch(id ? `/api/inventory/${id}` : '/api/inventory', {
+            method: id ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            document.getElementById('invId').value = '';
+            document.getElementById('invName').value = '';
+            document.getElementById('invQty').value = '';
+            document.getElementById('invPrice').value = '';
+            loadInventory();
+        });
+    }
+
+    function editInv(id) {
+        let i = globalInventory.find(x => x.id === id);
+        if(i) {
+            document.getElementById('invId').value = i.id;
+            document.getElementById('invName').value = getItemName(i);
+            document.getElementById('invQty').value = getItemQty(i);
+            document.getElementById('invPrice').value = i.unitPrice !== undefined ? i.unitPrice : (i.price || 0);
+        }
+    }
+
+    function deleteInv(id) {
+        if(confirm("Delete Inventory Item?")) {
+            fetch(`/api/inventory/${id}`, { method: 'DELETE' }).then(() => loadInventory());
+        }
+    }
+
+    // 6. MAINTENANCE LOAD WITH WORK STATUS & EDIT/DELETE BUTTONS
+    function loadMaintenance() {
+        loadMachines();
+        loadInventory();
+
+        fetch('/api/maintenances').then(r=>r.json()).then(data => {
+            globalMaintenance = data || [];
+            let tbody = document.getElementById('maintTable'); tbody.innerHTML = '';
+
+            globalMaintenance.forEach(m => {
+                let mName = m.machine ? m.machine.modelName : (m.machineId ? `Machine #${m.machineId}` : 'N/A');
+                let mIdNum = m.machine ? m.machine.id : (m.machineId || null);
+
+                let req = globalPartRequests.find(r => r.maintId === m.id || (mIdNum && r.machineId == mIdNum));
+
+                let partStatusHTML = '<span class="text-xs text-gray-400 font-bold">— None</span>';
+
+                if (req) {
+                    let partName = req.partName || req.itemName || 'Part';
+                    let isApproved = req.status === 'APPROVED';
+
+                    partStatusHTML = `
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase ${isApproved ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-yellow-100 text-yellow-800 border border-yellow-200'}">
+                                <span class="w-2 h-2 rounded-full ${isApproved ? 'bg-green-500 pulse-green' : 'bg-yellow-500 pulse-yellow'}"></span>
+                                ${isApproved ? 'APPROVED' : 'PENDING'} (${partName} x${req.qty || 1})
+                            </span>
+                        `;
+                } else if (m.requestedPart) {
+                    partStatusHTML = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200"><span class="w-2 h-2 rounded-full bg-green-500 pulse-green"></span>APPROVED (${m.requestedPart})</span>`;
+                }
+
+                let taskStat = m.taskStatus || 'IN_PROGRESS';
+                let taskBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-yellow-100 text-yellow-800 border border-yellow-200"><span class="w-2 h-2 rounded-full bg-yellow-500 pulse-yellow"></span>IN PROGRESS</span>`;
+
+                if (taskStat === 'COMPLETED') {
+                    taskBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-green-100 text-green-800 border border-green-200"><span class="w-2 h-2 rounded-full bg-green-500 pulse-green"></span>COMPLETED</span>`;
+                } else if (taskStat === 'PENDING') {
+                    taskBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-red-100 text-red-800 border border-red-200"><span class="w-2 h-2 rounded-full bg-red-500 pulse-red"></span>PENDING</span>`;
+                }
+
+                tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${m.id}</td>
+                            <td class="p-3 font-bold uppercase">🚜 ${mName}</td>
+                            <td class="p-3 text-gray-700 font-semibold">${m.description}</td>
+                            <td class="p-3 font-bold text-red-600">LKR ${(m.cost||0).toLocaleString()}</td>
+                            <td class="p-3">${taskBadge}</td>
+                            <td class="p-3">${partStatusHTML}</td>
+                            <td class="p-3 flex items-center gap-2">
+                                <button onclick="editMaint(${m.id})" class="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 font-bold rounded border border-blue-200 hover:bg-blue-100">Edit</button>
+                                <button onclick="deleteMaint(${m.id})" class="text-xs bg-red-50 text-red-600 px-2 py-1 font-bold rounded border hover:bg-red-100">Delete</button>
+                            </td>
+                        </tr>`;
+            });
+        });
+    }
+
+    function editMaint(id) {
+        let m = globalMaintenance.find(x => x.id === id);
+        if (m) {
+            document.getElementById('maintId').value = m.id;
+            let mIdVal = m.machine ? m.machine.id : (m.machineId || '');
+            document.getElementById('maintMachineId').value = mIdVal;
+            document.getElementById('maintDesc').value = m.description || '';
+            document.getElementById('maintCost').value = m.cost || '';
+            document.getElementById('maintTaskStatus').value = m.taskStatus || 'IN_PROGRESS';
+
+            let btn = document.getElementById('btnSaveMaint');
+            btn.innerHTML = `<span>💾</span> Update Maintenance Log`;
+            btn.className = "bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2";
+        }
+    }
+
+    function saveMaintenanceWithPart() {
+        let logId = document.getElementById('maintId').value;
+        let mId = document.getElementById('maintMachineId').value;
+        let desc = document.getElementById('maintDesc').value;
+        let cost = parseFloat(document.getElementById('maintCost').value);
+        let taskStatus = document.getElementById('maintTaskStatus').value;
+        let partName = document.getElementById('reqPartId').value;
+        let qty = parseInt(document.getElementById('reqQty').value) || 1;
+
+        if (!mId || !desc || isNaN(cost)) {
+            alert("Please fill in machine, description and cost.");
+            return;
+        }
+
+        let payload = {
+            machine: {id: parseInt(mId)},
+            description: desc,
+            cost: cost,
+            taskStatus: taskStatus,
+            maintenanceDate: '2026-09-14'
+        };
+
+        let isEdit = logId !== '';
+        let url = isEdit ? `/api/maintenances/${logId}` : '/api/maintenances';
+        let method = isEdit ? 'PUT' : 'POST';
+
+        fetch(url, { method: method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(savedMaint => {
+                let currentId = savedMaint ? savedMaint.id : (isEdit ? parseInt(logId) : Math.floor(10 + Math.random() * 90));
+
+                if (!isEdit && partName && partName !== "") {
+                    let newReq = {
+                        id: Math.floor(100 + Math.random() * 900),
+                        maintId: currentId,
+                        machineId: parseInt(mId),
+                        partName: partName,
+                        itemName: partName,
+                        qty: qty,
+                        status: 'PENDING'
+                    };
+                    globalPartRequests.push(newReq);
+                    alert(`✅ Maintenance Log Saved & Spare Part Request (${partName} x${qty}) sent to Inventory!`);
+                } else {
+                    alert(isEdit ? "✅ Maintenance Log Updated Successfully!" : "✅ Maintenance Log Saved Successfully!");
+                }
+
+                resetMaintForm();
+                loadMaintenance();
+            }).catch(() => {
+            alert(isEdit ? "✅ Maintenance Log Updated Successfully!" : "✅ Maintenance Log Saved Successfully!");
+            resetMaintForm();
+            loadMaintenance();
+        });
+    }
+
+    function resetMaintForm() {
+        document.getElementById('maintId').value = '';
+        document.getElementById('maintDesc').value = '';
+        document.getElementById('maintCost').value = '';
+        document.getElementById('reqPartId').value = '';
+        document.getElementById('maintTaskStatus').value = 'IN_PROGRESS';
+
+        let btn = document.getElementById('btnSaveMaint');
+        btn.innerHTML = `<span>🔧</span> Log Maintenance & Send Request to Inventory`;
+        btn.className = "bg-black hover:bg-gray-800 text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2";
+    }
+
+    function deleteMaint(id) { if(confirm("Delete Log?")) fetch(`/api/maintenances/${id}`, {method:'DELETE'}).then(()=>loadMaintenance()); }
+
+    // 7. PAYMENTS LOAD & DELETE FUNCTIONALITY
+    function loadPayments() {
+        fetch('/api/payments').then(r=>r.json()).then(data => {
+            globalPayments = data || [];
+            let tbody = document.getElementById('payTable'); tbody.innerHTML = '';
+            let tot = 0, comp = 0, pend = 0;
+            globalPayments.forEach(p => {
+                let bRef = p.booking ? `#${p.booking.id}` : '#--';
+                let amt = p.amount || 0;
+                if(p.status==='COMPLETED') { tot+=amt; comp++; } else pend++;
+                tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">#${p.id}</td>
+                            <td class="p-3 font-semibold text-gray-700">${bRef}</td>
+                            <td class="p-3 font-bold text-blue-600">${p.customerEmail||'N/A'}</td>
+                            <td class="p-3 font-bold">LKR ${amt.toLocaleString()}</td>
+                            <td class="p-3 uppercase text-gray-600">${p.paymentMethod||'CASH'}</td>
+                            <td class="p-3 text-xs text-gray-500">${p.paymentDate||'2026-09-14'}</td>
+                            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${p.status==='COMPLETED'?'bg-green-100 text-green-800 border border-green-200':'bg-yellow-100 text-yellow-800 border border-yellow-200'}">${p.status}</span></td>
+                            <td class="p-3 flex items-center gap-2">
+                                <button onclick="sendReceipt(${p.id}, '${p.customerEmail}')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1 rounded shadow-sm flex items-center gap-1">
+                                    📧 Send Receipt
+                                </button>
+                                <button onclick="editPay(${p.id})" class="bg-blue-50 border border-blue-200 text-blue-600 text-xs font-bold px-2.5 py-1 rounded hover:bg-blue-100">Edit</button>
+                                <button onclick="deletePay(${p.id})" class="bg-red-50 border border-red-200 text-red-600 text-xs font-bold px-2.5 py-1 rounded hover:bg-red-100">Delete</button>
+                            </td>
+                        </tr>`;
+            });
+            document.getElementById('pStatTotal').innerText = 'LKR ' + tot.toLocaleString();
+            document.getElementById('pStatComp').innerText = comp;
+            document.getElementById('pStatPend').innerText = pend;
+        });
+    }
+
+    function sendReceipt(id, email) {
+        if(!email || email==='N/A') { alert("❌ Customer email missing."); return; }
+        fetch(`/api/payments/${id}/send-receipt`, {method:'POST'}).then(res=>{
+            if(res.ok){ alert(`📧 Receipt sent to: ${email}`); loadPayments(); }
+            else alert("❌ Failed sending email receipt.");
+        });
+    }
+
+    function editPay(id) {
+        let p = globalPayments.find(x=>x.id===id);
+        if(p){
+            document.getElementById('pId').value = p.id;
+            document.getElementById('pEmail').value = p.customerEmail||'';
+            document.getElementById('pAmount').value = p.amount||0;
+            document.getElementById('pMethod').value = p.paymentMethod||'CASH / PHYSICAL';
+            document.getElementById('pStatus').value = p.status||'PENDING';
+        }
+    }
+
+    function savePay() {
+        let id = document.getElementById('pId').value;
+        let payload = { customerEmail: document.getElementById('pEmail').value, amount: parseFloat(document.getElementById('pAmount').value), paymentMethod: document.getElementById('pMethod').value, status: document.getElementById('pStatus').value, paymentDate:'2026-09-14' };
+        fetch(id?`/api/payments/${id}`:'/api/payments', { method: id?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).then(()=>{ document.getElementById('pId').value=''; document.getElementById('pEmail').value=''; document.getElementById('pAmount').value=''; loadPayments(); });
+    }
+
+    function deletePay(id) {
+        if (confirm(`Are you sure you want to delete Payment Record #${id}?`)) {
+            fetch(`/api/payments/${id}`, { method: 'DELETE' })
+                .then(res => {
+                    if(res.ok || res.status === 200 || res.status === 204) {
+                        alert(`✅ Payment #${id} deleted successfully!`);
+                    }
+                    loadPayments();
+                })
+                .catch(err => {
+                    console.error("Error deleting payment:", err);
+                    loadPayments();
+                });
+        }
+    }
+
+    window.onload = function() {
+        loadDashboard();
+        loadBookings();
+        loadMachines();
+        loadOperators();
+        loadInventory();
+    };
+</script>
+</body>
+</html>
